@@ -5,7 +5,7 @@ Python-Library for accessing online train connection APIs. (Elektronische Fahrpl
 
 A list of supported regions can be found [here](https://github.com/NoMoKeTo/pyefa/wiki/Supported-Regions).
 
-A pretty command line client is available named __[clifa](https://github.com/NoMoKeTo/clifa)__.
+A pretty command line client is available named __[clifa](https://nomoketo.github.io/clifa)__.
 
 ## Install
 
