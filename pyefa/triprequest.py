@@ -202,14 +202,14 @@ class TripRequest():
 				result.place=xmldata.itdOdvPlace.odvPlaceElem.getText().encode('utf-8').strip()
 				result.name=xmldata.itdOdvName.odvNameElem.getText().encode('utf-8').strip()
 				result.stopid=xmldata.itdOdvName.odvNameElem['stopID'] if xmldata.itdOdvName.odvNameElem.has_attr('stopID') else xmldata.itdOdvName.odvNameElem['id']
-				result.coords = tools.coords(xmldata.itdOdvName.odvNameElem['x'], xmldata.itdOdvName.odvNameElem['y'])
+				if xmldata.itdOdvName.odvNameElem.has_attr('x'): result.coords = tools.coords(xmldata.itdOdvName.odvNameElem['x'], xmldata.itdOdvName.odvNameElem['y'])
 			elif odvtype == 'address':
 				result = classes.Address()
 				result.place=xmldata.itdOdvPlace.odvPlaceElem.getText().encode('utf-8').strip()
 				result.name=xmldata.itdOdvName.odvNameElem.getText().encode('utf-8').strip()
 				result.streetname=xmldata.itdOdvName.odvNameElem['streetName']
 				result.housenumber=xmldata.itdOdvName.odvNameElem['houseNumber']
-				result.coords = tools.coords(xmldata.itdOdvName.odvNameElem['x'], xmldata.itdOdvName.odvNameElem['y'])
+				if xmldata.itdOdvName.odvNameElem.has_attr('x'): result.coords = tools.coords(xmldata.itdOdvName.odvNameElem['x'], xmldata.itdOdvName.odvNameElem['y'])
 			else:
 				raise exceptions.NotImplementedException('unknown type of odv: "%s"' % xmldata['type'])
 		return result
@@ -219,7 +219,7 @@ class TripRequest():
 		result.name         = xmldata['nameWO'].encode('utf-8').strip() if xmldata['locality'] != '' or xmldata['nameWO'] != '' else xmldata['name'].encode('utf-8').strip()
 		result.stopid       = xmldata['stopID']
 		result.platformname = xmldata['platformName'].encode('utf-8').replace('Gleis', '').replace('Bstg.', '').strip()
-		result.coords       = tools.coords(xmldata['x'], xmldata['y'])
+		if xmldata('x'): result.coords = tools.coords(xmldata['x'], xmldata['y'])
 		
 		times = []
 		if xmldata('itdDateTimeTarget'): times.append(self.parseDateTimeXML(xmldata.itdDateTimeTarget))
