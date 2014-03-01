@@ -3,7 +3,7 @@ pyefa
 
 Python-Library for accessing online train connection APIs. (Elektronische Fahrplanauskunft)
 
-A pretty command line client is available at [clifa](https://github.com/NoMoKeTo/clifa)
+A pretty command line client is available at __[clifa](https://github.com/NoMoKeTo/clifa)__.
 
 ## Install
 
