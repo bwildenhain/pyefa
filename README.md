@@ -5,7 +5,7 @@ Python-Library for accessing online train connection APIs. (Elektronische Fahrpl
 
 A pretty command line client is available at [clifa](https://github.com/NoMoKeTo/clifa)
 
-### Install
+## Install
 
 Just install it from the [Python Package Index](https://pypi.python.org/pypi/pyefa):
 
@@ -13,7 +13,7 @@ Just install it from the [Python Package Index](https://pypi.python.org/pypi/pye
 pip install pyefa
 ```
 
-##### Install from source
+### Install from source
 
 *The Python-Modules __beautifulsoup4__ and __colorama__ are required.*
 
@@ -23,7 +23,7 @@ Just clone the repository and run:
 python setup.py install
 ```
 
-### Documentation
+## Documentation
 
 Documentation is available via docstrings.
 
