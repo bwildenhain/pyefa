@@ -168,11 +168,11 @@ class TripRequest():
 				j = 0
 				for partXML in partsXML:
 					newpart = newroute.addpart(j)
-					newpart.origin      = classes.Point(fromapi=True)
+					newpart.origin      = classes.Point()
 					newpart.origin      = self.parsePointXML(partXML('itdPoint')[0], newpart.origin)
-					newpart.destination = classes.Point(fromapi=True)
+					newpart.destination = classes.Point()
 					newpart.destination = self.parsePointXML(partXML('itdPoint')[1], newpart.destination)
-					newpart.mot	= self.parseMotXML(partXML.itdMeansOfTransport, classes.Mot(fromapi=True))
+					newpart.mot	= self.parseMotXML(partXML.itdMeansOfTransport, classes.Mot())
 					
 					if newpart.mot.walk:
 						newpart.origin.departure_live = None
@@ -194,21 +194,24 @@ class TripRequest():
 			result = classes.TripPointCompatibleUnclear()
 			result.place=[elem.getText().encode('utf-8').strip() for elem in xmldata.itdOdvPlace('odvPlaceElem')]
 			result.name=[elem.getText().encode('utf-8').strip() for elem in xmldata.itdOdvName('odvNameElem')]
-		elif xmldata['type'] == 'stop': 
-			result = classes.Station()
-			result.place=xmldata.itdOdvPlace.odvPlaceElem.getText().encode('utf-8').strip()
-			result.name=xmldata.itdOdvName.odvNameElem.getText().encode('utf-8').strip()
-			result.stopid=xmldata.itdOdvName.odvNameElem['stopID']
-			result.coords = tools.coords(xmldata.itdOdvName.odvNameElem['x'], xmldata.itdOdvName.odvNameElem['y'])
-		elif xmldata['type'] == 'address':
-			result = classes.Address()
-			result.place=xmldata.itdOdvPlace.odvPlaceElem.getText().encode('utf-8').strip()
-			result.name=xmldata.itdOdvName.odvNameElem.getText().encode('utf-8').strip()
-			result.streetname=xmldata.itdOdvName.odvNameElem['streetName']
-			result.housenumber=xmldata.itdOdvName.odvNameElem['houseNumber']
-			result.coords = tools.coords(xmldata.itdOdvName.odvNameElem['x'], xmldata.itdOdvName.odvNameElem['y'])
 		else:
-			raise exceptions.NotImplementedException('unknown type of odv: "%s"' % xmldata['type'])
+			odvtype = xmldata['type']
+			if odvtype == 'any': odvtype = xmldata.itdOdvName.odvNameElem['anyType']
+			if odvtype == 'stop': 
+				result = classes.Station()
+				result.place=xmldata.itdOdvPlace.odvPlaceElem.getText().encode('utf-8').strip()
+				result.name=xmldata.itdOdvName.odvNameElem.getText().encode('utf-8').strip()
+				result.stopid=xmldata.itdOdvName.odvNameElem['stopID'] if xmldata.itdOdvName.odvNameElem.has_attr('stopID') else xmldata.itdOdvName.odvNameElem['id']
+				result.coords = tools.coords(xmldata.itdOdvName.odvNameElem['x'], xmldata.itdOdvName.odvNameElem['y'])
+			elif odvtype == 'address':
+				result = classes.Address()
+				result.place=xmldata.itdOdvPlace.odvPlaceElem.getText().encode('utf-8').strip()
+				result.name=xmldata.itdOdvName.odvNameElem.getText().encode('utf-8').strip()
+				result.streetname=xmldata.itdOdvName.odvNameElem['streetName']
+				result.housenumber=xmldata.itdOdvName.odvNameElem['houseNumber']
+				result.coords = tools.coords(xmldata.itdOdvName.odvNameElem['x'], xmldata.itdOdvName.odvNameElem['y'])
+			else:
+				raise exceptions.NotImplementedException('unknown type of odv: "%s"' % xmldata['type'])
 		return result
 		
 	def parsePointXML(self, xmldata, result):
@@ -240,15 +243,18 @@ class TripRequest():
 		if result.mottype == 0 and xmldata.has_attr('trainName'):
 			result.name   = xmldata['trainName'].encode('utf-8').strip()
 			result.abbr   = xmldata['trainType'].encode('utf-8').strip()
-			result.number = xmldata['shortname'].encode('utf-8').strip()
+			result.number = (xmldata['symbol'] if xmldata.has_attr('symbol') else xmldata['shortname']).encode('utf-8').strip()
 			result.line   = result.abbr+result.number
 		else:
 			result.name   = xmldata['productName'].encode('utf-8').strip()
 			result.abbr   = re.sub('[0-9 -]', '', xmldata['shortname'].encode('utf-8')).strip()
 			result.number = re.sub('[^0-9]', '', xmldata['shortname'].encode('utf-8')).strip()
-			result.line   = xmldata['shortname'].encode('utf-8').strip()	
-			
-		result.destination = classes.Station(fromapi=True, stopid=xmldata['destID'], name=xmldata['destination'].encode('utf-8').strip())
+			result.line   = (xmldata['symbol'] if xmldata.has_attr('symbol') else xmldata['shortname']).encode('utf-8').strip()	
+		
+		#print xmldata
+		result.destination = classes.Station()
+		result.destination.stopid = xmldata['destID']
+		result.destination.name   = xmldata['destination'].encode('utf-8').strip()
 		return result
 		
 	def parseDateTimeXML(self, xmldata):
@@ -284,11 +290,11 @@ class TripRequest():
 			j = 0
 			for partJSON in partsJSON:
 				newpart = newroute.addpart(j)
-				if newpart.origin is None: newpart.origin = classes.Point(fromapi=True)
-				if newpart.destination is None: newpart.destination = classes.Point(fromapi=True)
+				if newpart.origin is None: newpart.origin = classes.Point()
+				if newpart.destination is None: newpart.destination = classes.Point()
 				newpart.origin      = self.parsePointJSON(partJSON['points'][0], newpart.origin)
 				newpart.destination = self.parsePointJSON(partJSON['points'][1], newpart.destination)
-				newpart.mot	= self.parseMotJSON(partJSON['mode'], classes.Mot(fromapi=True))
+				newpart.mot	= self.parseMotJSON(partJSON['mode'], classes.Mot())
 				
 				newpart.via = []
 				newpart.via_all = []
@@ -299,7 +305,7 @@ class TripRequest():
 				
 				k = 0
 				for stopJSON in stopsJSON:
-					newstop = self.parseStopJSON(stopJSON, classes.Point(fromapi=True))
+					newstop = self.parseStopJSON(stopJSON, classes.Point())
 					newpart.via.append(newstop)
 					newstop.k = k
 					k+=1
@@ -346,7 +352,7 @@ class TripRequest():
 		return result
 		
 	def parseJSONcoords(self, data):
-		return [int(a) for a in data.split(',')]
+		return [int(float(a)) for a in data.split(',')] # Ja, int(float(a))! Das muss so, damit sowohl '123.0000' als auch '123' okay geht!
 	
 	def parsePointJSON(self, jsondata, result):
 		if result.place is None or result.place == '':
@@ -371,9 +377,10 @@ class TripRequest():
 			
 		result.mottype = int(jsondata['code'])
 		
-		result.number = re.sub('[^0-9]', '', jsondata['number'].encode('utf8')).strip()
-		result.abbr = re.sub('[0-9 -]', '', jsondata['number'].encode('utf8')).strip()
-		result.line = jsondata['number'].encode('utf8').strip()
+		tmpnumber = re.sub('\([^\)]+\)', '', jsondata['number'].encode('utf8'))
+		result.number = re.sub('[^0-9]', '', tmpnumber).strip()
+		result.abbr = re.sub('[0-9 -]', '', tmpnumber).strip()
+		result.line = tmpnumber.strip()
 		
 		tmpname = jsondata['name'].encode('utf8')
 		if result.number in tmpname:
