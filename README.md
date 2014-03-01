@@ -15,7 +15,7 @@ pip install pyefa
 
 ##### Install from source
 
-*The Python-Modules **beautifulsoup4** and **colorama** are required.*
+*The Python-Modules __beautifulsoup4__ and __colorama__ are required.*
 
 Just clone the repository and run:
 
