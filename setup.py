@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from distutils.core import setup
+from setuptools import setup
 import pyefa
 
 setup(name='pyefa',
@@ -16,5 +16,5 @@ setup(name='pyefa',
 		'Intended Audience :: Developers',
 		'Programming Language :: Python',
 		'License :: OSI Approved :: Apache Software License'],
-	install_requires=['bs4', 'colorama'],
+	install_requires=['beautifulsoup4', 'colorama'],
 	)
