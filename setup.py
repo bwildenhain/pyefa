@@ -5,7 +5,7 @@ import pyefa
 
 setup(name='pyefa',
 	version=pyefa.__version__,
-	description='Python-Bindings vor EFA-APIs. (Elektronische Fahrplanauskunft)',
+	description='Python-Bindings for online train connection APIs.',
 	author='Nils Martin Klünder',
 	author_email='nomoketo@nomoketo.de',
 	url='https://github.com/NoMoKeTo/pyefa',
