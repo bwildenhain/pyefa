@@ -10,6 +10,7 @@ A pretty command line client is available at [clifa](https://github.com/NoMoKeTo
 Just clone the repository and run:
 
 ```
+pip install beautifulsoup4 colorama
 python setup.py install
 ```
 
