@@ -16,5 +16,5 @@ setup(name='pyefa',
 		'Intended Audience :: Developers',
 		'Programming Language :: Python',
 		'License :: OSI Approved :: Apache Software License'],
-	requires=['bs4', 'colorama'],
+	install_requires=['bs4', 'colorama'],
 	)
