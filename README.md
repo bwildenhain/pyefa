@@ -12,7 +12,7 @@ A pretty command line client is available named __[clifa](https://nomoketo.githu
 Just install it from the [Python Package Index](https://pypi.python.org/pypi/pyefa):
 
 ```
-pip install pyefa
+sudo pip install pyefa
 ```
 
 ### Install from source
@@ -30,7 +30,7 @@ python setup.py install
 Documentation is available via docstrings.
 
 ```
-pydov clifa
-pydov clifa.classes
+pydoc clifa
+pydoc clifa.classes
 # and so on
 ```
