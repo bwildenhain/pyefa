@@ -325,7 +325,7 @@ class TripRequest():
 						newpart.via.pop(len(newpart.via)-1-k)
 						break
 				
-				# Und jeeeetzt schmeißen wir alle stops raus die nicht auf unserer Strecker liegen.
+				# Und jeeeetzt schmeißen wir alle stops raus die nicht auf unserer Strecke liegen.
 				# Warum? Weil die EFA-API ab und an spontan stops anderer parts einmischt. Wie doof ist das denn?
 				newpart.via_all = []
 				for via in newpart.via:
@@ -336,9 +336,8 @@ class TripRequest():
 				newpart.via = []
 				for via in newpart.via_all:
 					if not via.nostop: newpart.via.append(via)
-					
-					
-				newpart.duration = int((newpart.destination.arrival - newpart.origin.departure).total_seconds())/6
+						
+				newpart.duration = int((newpart.destination.arrival - newpart.origin.departure).total_seconds())/60
 				if 'turnInst' in partJSON:
 					newpart.distance = sum([int(inst['dis']) for inst in partJSON['turnInst']])
 					
