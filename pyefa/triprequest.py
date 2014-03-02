@@ -299,7 +299,7 @@ class TripRequest():
 				newpart.via = []
 				newpart.via_all = []
 				
-				newpart.path = [tools.coords(*c.split(',')) for c in partJSON['path'].strip().split(' ')]
+				if 'path' in partJSON: newpart.path = [tools.coords(*c.split(',')) for c in partJSON['path'].strip().split(' ')]
 				
 				stopsJSON = partJSON['stopSeq'] if 'stopSeq' in partJSON else []
 				
@@ -325,12 +325,6 @@ class TripRequest():
 						newpart.via.pop(len(newpart.via)-1-k)
 						break
 				
-				# Und jeeeetzt schmeißen wir alle stops raus die nicht auf unserer Strecke liegen.
-				# Warum? Weil die EFA-API ab und an spontan stops anderer parts einmischt. Wie doof ist das denn?
-				newpart.via_all = []
-				for via in newpart.via:
-					if via.coords in newpart.path: newpart.via_all.append(via)
-				
 				# Gefilterte liste ohne durchfahren erstellen		
 				newpart.via_all = newpart.via
 				newpart.via = []
@@ -351,6 +345,7 @@ class TripRequest():
 		return result
 		
 	def parseJSONcoords(self, data):
+		if data.strip() in ('', ','): return None
 		return [int(float(a)) for a in data.split(',')] # Ja, int(float(a))! Das muss so, damit sowohl '123.0000' als auch '123' okay geht!
 	
 	def parsePointJSON(self, jsondata, result):
@@ -362,7 +357,7 @@ class TripRequest():
 		if result.platformname is None:
 			result.platformname = jsondata['ref']['platform'].encode('utf8').strip()
 		c = self.parseJSONcoords(jsondata['ref']['coords'])
-		result.coords = tools.coords(c[0], c[1])
+		if c is not None: result.coords = tools.coords(c[0], c[1])
 		
 		setattr(result, jsondata['usage'], datetime.datetime.strptime('%s %s' % (jsondata['dateTime']['date'], jsondata['dateTime']['time']), '%d.%m.%Y %H:%M'))
 		return result
@@ -425,9 +420,9 @@ class TripRequest():
 				
 		if 'arrDateTime' not in jsondata['ref'] and 'depDateTime' not in jsondata['ref']:
 			result.nostop = True
-				
+		
 		c = self.parseJSONcoords(jsondata['ref']['coords'])
-		result.coords = tools.coords(c[0], c[1])
+		if c is not None: result.coords = tools.coords(c[0], c[1])
 		return result
 
 	
