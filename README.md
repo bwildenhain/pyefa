@@ -30,7 +30,7 @@ python setup.py install
 Documentation is available via docstrings.
 
 ```
-pydov clifa
-pydov clifa.classes
+pydoc clifa
+pydoc clifa.classes
 # and so on
 ```
