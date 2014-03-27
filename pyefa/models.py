@@ -1,12 +1,29 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import datetime
+import datetime, requests
 
 class API:
+	debug = True
 	def __init__(self):
 		pass
 		
-	def 
+	def tripRequest(self, origin, destination, via=None, datetime=None,
+					timetype='dep', exclude=('ice', 'ic'), max_interchanges=9,
+					select_interchange_by='speed', use_near_stops=False,
+					walk_speed='normal', with_bike=False, use_realtime=True):		
+		pass
+		
+	def earlier(self):
+		pass
+		
+	def later(self):
+		pass
+		
+	def submit(self, url, post):
+		r = requests.post(url, data=post)
+		#if self.debug and os.path.isfile('cache.%s' % outputtype): return open('cache.%s' % outputtype, 'r').read()
+		response = r.text
+		if self.debug: open('cache.xml', 'w').write(response)
+		return response
 
 class Request:
 	def __init__(self):
@@ -21,17 +38,33 @@ class Request:
 		self.serverVersion = None
 		self.clientIP      = None
 		
-class TripResult():
-	def __init__(self):
-		self.requests = []
-		pass
+class Location():
+	pass
+	
+class City():
+	def __init__(self, name=None):
+		self.id = None
+		self.name = name
+	
+class Stop(Location):
+	def __init__(self, city=None, name=None):
+		self.id = None
+		self.name = name
+		self.city = City(city) if isinstance(city, str) else city
 		
-	def later(self):
+class TripResult():
+	def __init__(self, api):
+		self.api = api
+		
+		self.origin      = None
+		self.destination = None
+		self.via         = None
+		
+		self.request = []
 		pass
 		
 	def earlier(self):
-		pass
+		self.api.earlier(self)
 		
-	def 
-
-	
+	def later(self):
+		self.api.later(self)
