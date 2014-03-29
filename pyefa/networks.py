@@ -16,4 +16,10 @@ def network(network):
 	return globals()[network.upper()]()
 
 vrr = VRR()
-vrr.tripRequest(models.Stop('Essen', 'Hbf'), models.Stop('Duisburg', 'Hbf'))
+result = vrr.tripRequest(models.Stop('E', 'Hbf'), models.Stop('Duisburg', 'Hbf'))
+
+result.post = None
+print(result.__dict__)
+#print(result.exclude)
+#print(result.include)
+
