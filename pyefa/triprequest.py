@@ -258,7 +258,7 @@ class TripRequest():
 		return result
 		
 	def parseDateTimeXML(self, xmldata):
-		return datetime.datetime(int(xmldata.itdDate['year']), int(xmldata.itdDate['month']), int(xmldata.itdDate['day']), int(xmldata.itdTime['hour']), int(xmldata.itdTime['minute']))
+		return datetime.datetime(int(xmldata.itdDate['year']), int(xmldata.itdDate['month']), int(xmldata.itdDate['day']), int(xmldata.itdTime['hour'])%24, int(xmldata.itdTime['minute']))
 		
 	def parseHourMinutes(self, data):
 		data = data.split(':')
@@ -359,7 +359,11 @@ class TripRequest():
 		c = self.parseJSONcoords(jsondata['ref']['coords'])
 		if c is not None: result.coords = tools.coords(c[0], c[1])
 		
-		setattr(result, jsondata['usage'], datetime.datetime.strptime('%s %s' % (jsondata['dateTime']['date'], jsondata['dateTime']['time']), '%d.%m.%Y %H:%M'))
+		if jsondata['dateTime']['time'] != '24:00':
+			datetimeObject = datetime.datetime.strptime('%s %s' % (jsondata['dateTime']['date'], jsondata['dateTime']['time']), '%d.%m.%Y %H:%M')
+		else:
+			datetimeObject = datetime.datetime.strptime('%s' % (jsondata['dateTime']['date']), '%d.%m.%Y') + datetime.timedelta(1)
+		setattr(result, jsondata['usage'], datetimeObject)
 		return result
 		
 	def parseMotJSON(self, jsondata, result):
