@@ -262,7 +262,7 @@ class TripRequest():
 		if hour != 24:
 			return datetime.datetime(int(xmldata.itdDate['year']), int(xmldata.itdDate['month']), int(xmldata.itdDate['day']), hour, int(xmldata.itdTime['minute']))
 		else:
-			return datetime.datetime(int(xmldata.itdDate['year']), int(xmldata.itdDate['month']), int(xmldata.itdDate['day']) + 1, 0, int(xmldata.itdTime['minute']))
+			return datetime.datetime(int(xmldata.itdDate['year']), int(xmldata.itdDate['month']), int(xmldata.itdDate['day']), 0, int(xmldata.itdTime['minute'])) + datetime.timedelta(1)
 		
 	def parseHourMinutes(self, data):
 		data = data.split(':')
